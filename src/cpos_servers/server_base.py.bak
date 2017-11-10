@@ -1,0 +1,39 @@
+import csp
+import ctypes
+import threading
+import time
+
+import network
+
+class ServerBase(threading.Thread):
+
+    def run(self):
+        self.sock = csp.CspSocket()
+        self.sock.bind(csp.CSP_ANY)
+        self.sock.listen(10)
+        self.running = True
+        while self.running:
+            self.serve():
+
+    def serve(self):
+        conn = self.sock.accept(1000)
+        if not conn:
+            return
+
+        packet = conn.read(100)
+        if packet:
+            if conn.dport = network.Port.POWER_ON:
+                self.power_on()
+            elif conn.dport = network.Port.POWER_OFF:
+                self.power_off()
+            else:
+                self.handle_packet(packet)
+
+    def power_off(self):
+        raise NotImplentedError();
+
+    def power_on(self):
+        raise NotImplentedError();
+
+    def handle_packet(self, packet):
+        raise NotImplentedError();
