@@ -11,16 +11,14 @@ SOCKET_PATH = '/tmp/cdh'
 
 class CDHHandler(socketserver.BaseRequestHandler):
     def handle(self):
-        msg = pickle.loads(self.request[0])
-        sock = self.request[1]
-        print('Received datagram type {} from {}'.format(msg.req_type, self.client_address))
+        msg = pickle.loads(self.request.recv(1024))
+        print('{} received {} from {}'.format(SOCKET_PATH, msg.req_type, self.client_address))
         if msg.req_type == RequestType.RESTART:
             # Kill ourselves and let the watchdog restart us
             raise Exception('CDH going down for restart')
         elif msg.req_type == RequestType.PING:
-            sock.sendto(
+            self.request.sendall(
                 pickle.dumps(Msg(RequestType.PING_RESP, None)), 
-                self.client_address
             )
         elif msg.req_type == RequestType.COMMAND:
             print('Executing command: {}'.format(msg.data))
@@ -31,7 +29,7 @@ def start_server():
         print('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = socketserver.UnixDatagramServer(
+    server = socketserver.UnixStreamServer(
         SOCKET_PATH,
         CDHHandler
     )

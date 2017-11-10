@@ -11,21 +11,13 @@ import select
 import pickle
 import json
 import os
+from fast_socket import FastSocket
 
 from cpos_types.datagram import Msg, RequestType
 
 SERVERS = [cdh_server, comms_server]
-SOCK = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+
 SOCKET_PATH = '/tmp/watchdog'
-
-PING_TIMEOUT = 10
-
-def sock_setup():
-    SOCK.setblocking(0)
-    if os.path.exists(SOCKET_PATH):
-        os.remove(SOCKET_PATH)
-    SOCK.bind(SOCKET_PATH)
-
 
 def boot(server):
     proc = multiprocessing.Process(target=server.start_server)
@@ -44,20 +36,20 @@ def watch(server_procs: Dict[Any, multiprocessing.Process]):
                 print('Server {} is not alive, restarting it...'.format(server))
                 server_procs[server] = boot(server)
 
-            SOCK.sendto(
-                pickle.dumps(Msg(RequestType.PING, None)), 
-                server.SOCKET_PATH
-            )
-            if not select.select([SOCK], [], [], PING_TIMEOUT):
-                print('Server {} is not responding to pings, restarting it...')
-                proc.terminate()
-                proc.join()
-                server_procs[server] = boot(server)
+            with FastSocket(SOCKET_PATH, server.SOCKET_PATH, timeout=120) as sock:
+                sock.sendall(pickle.dumps(Msg(RequestType.PING, None))) 
+
+                try:
+                    sock.recv(1024)
+                except OSError:
+                    print('Server {} is not responding to pings, restarting it...')
+                    proc.terminate()
+                    proc.join()
+                    server_procs[server] = boot(server)
 
         
 def main():
     server_procs = {server: boot(server) for server in SERVERS}
-    sock_setup()
     watch(server_procs)
 
 if __name__ == '__main__':
