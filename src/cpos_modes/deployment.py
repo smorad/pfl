@@ -1,24 +1,23 @@
+#!/usr/bin/env python3
+
 import time
 import socket
 import pickle
-
+import logging
 
 from cpos_types.datagram import Msg, RequestType
 from cpos_servers.fast_socket import FastSocket
-# TODO: remove after testing
-#from cpos_servers import watchdog
-from base_mode import CPOSMode
+from cpos_modes.base_mode import CPOSMode
 
-# TODO: remove after testing
-#watchdog.main()
 SOCKET_PATH = '/tmp/mode/deployment'
 COMMS_SOCKET_PATH = '/tmp/comms'
+logging.basicConfig(level=logging.INFO)
 
 class Deployment(CPOSMode):
     def start(self):
         # wait 15 mins
         DEPLOY_WAIT = 3 # will actually be 15 mins
-        print('Waiting {} secs to deploy antenna...'.format(DEPLOY_WAIT))
+        logging.info('Waiting {} secs to deploy antenna...'.format(DEPLOY_WAIT))
         time.sleep(DEPLOY_WAIT)
         # deploy antenna
         # send command
@@ -42,5 +41,7 @@ class Deployment(CPOSMode):
         with FastSocket(SOCKET_PATH, COMMS_SOCKET_PATH, timeout=60 * 5) as sock:
             sock.sendall(msg)
             resp = sock.recv(1024)
-            print(resp)
         return pickle.loads(resp)
+
+if __name__ == '__main__':
+    Deployment().start()

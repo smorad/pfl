@@ -1,23 +1,27 @@
-from cpos_types.datagram import Msg, RequestType
-import multiprocessing
+#!/usr/bin/env python3
 
-import cdh_server
-import comms_server
+import multiprocessing
 import time
 from typing import Any, Tuple, List, Dict
 import socket
 import select
-
 import pickle
-import json
 import os
-from fast_socket import FastSocket
+import logging
+
+import cpos_servers.logging_server
+from cpos_servers import cdh_server
+from cpos_servers import comms_server
+from cpos_types.datagram import Msg, RequestType
+from cpos_servers.fast_socket import FastSocket
+
 
 from cpos_types.datagram import Msg, RequestType
 
 SERVERS = [cdh_server, comms_server]
 
 SOCKET_PATH = '/tmp/watchdog'
+logging.basicConfig(level=logging.INFO)
 
 def boot(server):
     proc = multiprocessing.Process(target=server.start_server)
@@ -29,11 +33,12 @@ def watch(server_procs: Dict[Any, multiprocessing.Process]):
     '''
     Ensure servers are running, and are responding to pings
     '''
+    logging.info('Watchdog started')
     while(True):
-        time.sleep(1)
+        time.sleep(5)
         for server, proc in server_procs.items():
             if not proc.is_alive():
-                print('Server {} is not alive, restarting it...'.format(server))
+                logging.error('Server {} is not alive, restarting it...'.format(server))
                 server_procs[server] = boot(server)
 
             with FastSocket(SOCKET_PATH, server.SOCKET_PATH, timeout=120) as sock:
@@ -42,7 +47,7 @@ def watch(server_procs: Dict[Any, multiprocessing.Process]):
                 try:
                     sock.recv(1024)
                 except OSError:
-                    print('Server {} is not responding to pings, restarting it...')
+                    logging.error('Server {} is not responding to pings, restarting it...')
                     proc.terminate()
                     proc.join()
                     server_procs[server] = boot(server)

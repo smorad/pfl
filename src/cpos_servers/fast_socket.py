@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import socket
 import os
 
@@ -14,11 +16,9 @@ class FastSocket:
 
         self.sock.bind(self.src)
         self.sock.settimeout(self.timeout)
-        #self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 5)
         self.sock.connect(self.dest)
         return self.sock
 
     def __exit__(self, *args):
-        #self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
 
