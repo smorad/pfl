@@ -19,6 +19,10 @@ class CommsHandler(socketserver.BaseRequestHandler):
         time.sleep(10)
         return True
 
+    def beacon(self) -> bool:
+        time.sleep(3)
+        return True
+
     def handle(self):
         msg = pickle.loads(self.request.recv(1024))
         logging.debug('{} received {} from {}'.format(SOCKET_PATH, msg.req_type, self.client_address))
@@ -33,6 +37,12 @@ class CommsHandler(socketserver.BaseRequestHandler):
                 logging.info('antenna deployment result: {}'.format(result))
                 self.request.sendall(
                     pickle.dumps(Msg(RequestType.DATA, result)), 
+                )
+            elif msg.data == 'start beacon':
+                result = self.beacon()
+                logging.info('Beacon result: {}'.format(result))
+                self.request.sendall(
+                    pickle.dumps(Msg(RequestType.DATA, result))
                 )
 
 

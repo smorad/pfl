@@ -11,6 +11,7 @@ from cpos_types.datagram import Msg, RequestType
 SOCKET_PATH = '/tmp/cdh'
 logging.basicConfig(level=logging.INFO)
 
+
 class CDHHandler(socketserver.BaseRequestHandler):
     def handle(self):
         msg = pickle.loads(self.request.recv(1024))

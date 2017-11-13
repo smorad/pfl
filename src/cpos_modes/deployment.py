@@ -20,28 +20,36 @@ class Deployment(CPOSMode):
         logging.info('Waiting {} secs to deploy antenna...'.format(DEPLOY_WAIT))
         time.sleep(DEPLOY_WAIT)
         # deploy antenna
-        # send command
+        # check IMU for spin decrease
         self.deploy_antenna()
         # update launch status
-        # cdh
         # wait 30 mins
-
-        # beacon
+        BEACON_WAIT = 3 # this will be 30 mins
+        logging.info('Waiting {} secs to begin beacon...'.format(BEACON_WAIT))
+        self.beacon()
 
         # wait for signal
 
         # detumble
 
+    def fail(self):
+        '''
+        Cleanup in case of failure
+        '''
+        # retract antenna
+        pass
+
     def deploy_antenna(self) -> bool:
-        msg = pickle.dumps(Msg(
+        return Msg(
             RequestType.COMMAND,
             'deploy antenna',
-        ))
+        ).send_and_recv(SOCKET_PATH, COMMS_SOCKET_PATH, timeout=60 * 5)
 
-        with FastSocket(SOCKET_PATH, COMMS_SOCKET_PATH, timeout=60 * 5) as sock:
-            sock.sendall(msg)
-            resp = sock.recv(1024)
-        return pickle.loads(resp)
+    def beacon(self) -> bool:
+        return Msg(
+            RequestType.COMMAND,
+            'start beacon',
+        ).send_and_recv(SOCKET_PATH, COMMS_SOCKET_PATH, timeout=60 * 5)
 
 if __name__ == '__main__':
     Deployment().start()
