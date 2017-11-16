@@ -6,25 +6,18 @@ import os
 import pickle
 import logging
 
+from cpos_servers import base_server
 from cpos_types.datagram import Msg, RequestType 
 
 SOCKET_PATH = '/tmp/cdh'
 logging.basicConfig(level=logging.INFO)
 
 
-class CDHHandler(socketserver.BaseRequestHandler):
+class CDHHandler(base_server.CPOSHandler):
     def handle(self):
         msg = pickle.loads(self.request.recv(1024))
-        logging.debug('{} received {} from {}'.format(SOCKET_PATH, msg.req_type, self.client_address))
-        if msg.req_type == RequestType.RESTART:
-            # Kill ourselves and let the watchdog restart us
-            raise Exception('CDH going down for restart')
-        elif msg.req_type == RequestType.PING:
-            self.request.sendall(
-                pickle.dumps(Msg(RequestType.PING_RESP, None)), 
-            )
-        elif msg.req_type == RequestType.COMMAND:
-            print('Executing command: {}'.format(msg.data))
+        if self.handle_default(msg):
+            return True
 
 def start_server():
     logging.info('Initializing CDH server...')
@@ -32,7 +25,7 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = socketserver.UnixStreamServer(
+    server = base_server.CPOSServer(
         SOCKET_PATH,
         CDHHandler
     )

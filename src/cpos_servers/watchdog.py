@@ -48,25 +48,16 @@ def checksum(server):
             logging.critical('Server {} checksum mismatch: {} {}'.format(server, cached_sum, sha1_sum))
 
         
-
-
-def server_alive(server, proc):
-    if not proc.is_alive():
-        logging.error('Server {} is not alive, restarting it...'.format(server))
-        server_procs[server] = boot(server)
-
 def server_ping(server):
-    with FastSocket(SOCKET_PATH, server.SOCKET_PATH, timeout=120) as sock:
+    with FastSocket(SOCKET_PATH, server.SOCKET_PATH, timeout=60) as sock:
         sock.sendall(pickle.dumps(Msg(RequestType.PING, None))) 
 
         try:
             sock.recv(1024)
+            return True
         except OSError:
-            logging.error('Server {} is not responding to pings, restarting it...')
-            proc.terminate()
-            proc.join()
-            server_procs[server] = boot(server)
-        
+            return False
+
 def watch(server_procs: Dict[Any, multiprocessing.Process]):
     '''
     Ensure servers are running, and are responding to pings
@@ -75,9 +66,18 @@ def watch(server_procs: Dict[Any, multiprocessing.Process]):
     while(True):
         time.sleep(5)
         for server, proc in server_procs.items():
-            server_alive(server, proc)
-            server_ping(server)
-            checksum(server)
+            if not proc.is_alive():
+                logging.error('Server {} is not alive, restarting it...'.format(server))
+                server_procs[server] = boot(server)
+
+            if not server_ping(server):
+                logging.error('Server {} is not responding to pings, restarting it...'.format(server))
+                proc.terminate()
+                proc.join()
+                server_procs[server] = boot(server)
+
+            # TODO renable checksum when files stop changing
+            #checksum(server)
 
         
 def main():

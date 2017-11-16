@@ -9,24 +9,18 @@ import logging
 from cpos_types.datagram import Msg, RequestType
 from cpos_types.cmd_types import ADCSCmd
 from cpos_servers.fast_socket import FastSocket
+from cpos_servers import base_server
 
 SOCKET_PATH = '/tmp/adcs'
 logging.basicConfig(level=logging.INFO)
 
 
-class ADCSHandler(socketserver.BaseRequestHandler):
+class ADCSHandler(base_server.CPOSHandler):
     def handle(self):
-        msg = pickle.loads(self.request.recv(1024))
-        logging.debug('{} received {} from {}'.format(SOCKET_PATH, msg.req_type, self.client_address))
-        if msg.req_type == RequestType.RESTART:
-            # Kill ourselves and let the watchdog restart us
-            raise Exception('ADCS going down for restart')
-        elif msg.req_type == RequestType.PING:
-            self.request.sendall(
-                pickle.dumps(Msg(RequestType.PING_RESP, None)), 
-            )
-        elif msg.req_type == RequestType.COMMAND:
-            print('Executing command: {}'.format(msg.data))
+        try:
+            msg = pickle.loads(self.request.recv(1024))
+            if self.handle_default(msg):
+                return
             if msg.data == ADCSCmd.IS_TUMBLING:
                 result = self.is_tumbling()
                 self.request.sendall(
@@ -37,6 +31,10 @@ class ADCSHandler(socketserver.BaseRequestHandler):
                 self.request.sendall(
                     pickle.dumps(Msg(RequestType.DATA, result))
                 )
+            else:
+                logging.error('Msg {} could not be executed'.format(self.msg))
+        except Exception as e:
+            print(e)
 
 
     def is_tumbling(self):
@@ -54,7 +52,7 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = socketserver.UnixStreamServer(
+    server = base_server.CPOSServer(
         SOCKET_PATH,
         ADCSHandler
     )
