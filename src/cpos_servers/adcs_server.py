@@ -6,7 +6,8 @@ import os
 import pickle
 import logging
 
-from cpos_types.datagram import Msg, RequestType, ADCSCommand
+from cpos_types.datagram import Msg, RequestType
+from cpos_types.cmd_types import ADCSCmd
 from cpos_servers.fast_socket import FastSocket
 
 SOCKET_PATH = '/tmp/adcs'
@@ -19,14 +20,14 @@ class ADCSHandler(socketserver.BaseRequestHandler):
         logging.debug('{} received {} from {}'.format(SOCKET_PATH, msg.req_type, self.client_address))
         if msg.req_type == RequestType.RESTART:
             # Kill ourselves and let the watchdog restart us
-            raise Exception('CDH going down for restart')
+            raise Exception('ADCS going down for restart')
         elif msg.req_type == RequestType.PING:
             self.request.sendall(
                 pickle.dumps(Msg(RequestType.PING_RESP, None)), 
             )
         elif msg.req_type == RequestType.COMMAND:
             print('Executing command: {}'.format(msg.data))
-            if msg.data == ADCSCommand['IS_TUMBLING']:
+            if msg.data == ADCSCmd.IS_TUMBLING:
                 result = self.is_tumbling()
                 self.request.sendall(
                     pickle.dumps(Msg(RequestType.DATA, result))

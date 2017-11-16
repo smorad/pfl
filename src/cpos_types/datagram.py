@@ -9,12 +9,6 @@ from cpos_servers.fast_socket import FastSocket
 RequestType = enum.Enum('RequestType', 
     'POWER_ON POWER_OFF RESTART COMMAND DATA PING PING_RESP LOG')
 
-CommsCommand = enum.Enum('CommsCommand',
-    'EXTEND_ANT RETRACT_ANT')
-
-ADCSCommand = enum.Enum('ADCSCommand',
-        'IS_TUMBLING')
-
 class Msg:
     def __init__(self, req_type: RequestType, data: Any):
         self.req_type = req_type

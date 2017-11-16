@@ -2,7 +2,8 @@
 
 import logging
 
-from cpos_types.datagram import Msg, RequestType, ADCSCommand
+from cpos_types.datagram import Msg, RequestType
+from cpos_types.cmd_types import ADCSCmd
 from cpos_servers.fast_socket import FastSocket
 from cpos_modes.base_mode import CPOSMode
 
@@ -29,7 +30,7 @@ class Detumble(CPOSMode):
 
         is_tumbling = Msg(
             RequestType.COMMAND, 
-            ADCSCommand['IS_TUMBLING']
+            ADCSCmd.IS_TUMBLING
         ).send_and_recv(SOCKET_PATH, ADCS_SOCKET_PATH)
 
         if not is_tumbling:
