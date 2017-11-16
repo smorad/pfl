@@ -14,15 +14,24 @@ python3 cpos_servers/watchdog.py &
 sleep 1
 echo '---------------------------------'
 echo
+
 echo 'Deployment Phase:'
 echo '---------------------------------'
 python3 cpos_modes/deployment.py
 echo '---------------------------------'
 echo
+
 echo 'Detumble Phase:'
 echo '---------------------------------'
 python3 cpos_modes/detumble.py
 echo '---------------------------------'
+echo
+
+echo 'SafeMode Phase:'
+echo '---------------------------------'
+python3 cpos_modes/safe_mode.py
+echo '---------------------------------'
+
 # Reap children
 echo '---------------------------------'
 echo 'Test complete, terminating...'
