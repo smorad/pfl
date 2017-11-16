@@ -28,9 +28,7 @@ class Deployment(CPOSMode):
         logging.info('Waiting {} secs to begin beacon...'.format(BEACON_WAIT))
         self.beacon()
 
-        # wait for signal
-
-        # detumble
+        # wait for ground signal
 
     def fail(self):
         '''

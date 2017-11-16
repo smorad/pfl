@@ -13,13 +13,14 @@ import hashlib
 import cpos_servers.logging_server
 from cpos_servers import cdh_server
 from cpos_servers import comms_server
+from cpos_servers import adcs_server
 from cpos_types.datagram import Msg, RequestType
 from cpos_servers.fast_socket import FastSocket
 
 
 from cpos_types.datagram import Msg, RequestType
 
-SERVERS = [cdh_server, comms_server]
+SERVERS = [cdh_server, comms_server, adcs_server]
 
 SOCKET_PATH = '/tmp/watchdog'
 logging.basicConfig(level=logging.INFO)
@@ -33,7 +34,7 @@ def checksum(server):
     with open(server.__file__, 'rb') as f:
         sha1_sum = hashlib.sha1(f.read()).hexdigest()
     sum_file = server.__file__ + '.checksum'
-
+    
     # TODO: remove me once files stop changing
     if not os.path.isfile(sum_file):
         with open(sum_file, 'w+') as f:
