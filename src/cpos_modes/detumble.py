@@ -3,13 +3,14 @@
 import logging
 
 from cpos_types.datagram import Msg, RequestType
-from cpos_types.cmd_types import ADCSCmd
+from cpos_types.cmd_types import ADCSCmd, PowerCmd
 from cpos_servers.fast_socket import FastSocket
 from cpos_modes.base_mode import CPOSMode
 
 SOCKET_PATH = '/tmp/mode/detumble'
 COMMS_SOCKET_PATH = '/tmp/comms'
 ADCS_SOCKET_PATH = '/tmp/adcs'
+POWER_SOCKET_PATH = '/tmp/power'
 
 logging.basicConfig(level=logging.INFO)
 class Detumble(CPOSMode):
@@ -36,11 +37,28 @@ class Detumble(CPOSMode):
         if not is_tumbling:
             self.finish_detumble()
 
+        low_power = Msg(
+            RequestType.COMMAND,
+            PowerCmd.LOW_POWER
+        ).send_and_recv(SOCKET_PATH, POWER_SOCKET_PATH)
+
+        if not low_power:
+            detumble = Msg(
+                RequestType.COMMAND,
+                ADCSCmd.COILS_ON
+            ).send_and_recv(SOCKET_PATH, ADCS_SOCKET_PATH)
+
+            send_beacon = Msg(
+                RequestType.COMMAND,
+                CommsCmd.SEND_TLM_PKT
+            ).send_and_recv(SOCKET_PATH, ADCS_SOCKET_PATH)
+
 
     def finish_detumble(self):
         '''
         Disable mag coils, record telem, and go to safe mode
-        after
+        after. Mag coils should already be disabled (ie only running when
+        awaiting detumble conn).
         '''
         pass
 

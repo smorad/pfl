@@ -18,6 +18,8 @@ ADCSCmd = Enum('ADCSCmd',
     ' '.join(
     ['GET_STATE',    # Reply with packet containing pointing angle and position
     'IS_TUMBLING',   # Return whether or not the craft is still tumbling
+    'COILS_ON'       # Power on magcoils to detumble
+    'COILS_OFF'      # Power off magcoils
     'DETUMBLE',      # Detumble spacecraft during deployment phase
     'POINT',         # Point spacecaft at specified angle
     'TRACK'          # Track object
@@ -36,5 +38,12 @@ CDHCmd = Enum('CDHCmd',
     ' '.join(
     ['SYNC_CLOCKS',  # Send out a heartbeat to sync all subsystem clocks
     'EXEC_CMD'       # For emergencies: run a shell command
+    ])
+)
+
+PowerCmd = Enum('PowerCmd',
+    ' '.join(
+    ['GET_STATUS' ,  # Return bus and battery voltage and current
+    'LOW_POWER'      # Returns whether or not power is low
     ])
 )

@@ -14,13 +14,15 @@ import cpos_servers.logging_server
 from cpos_servers import cdh_server
 from cpos_servers import comms_server
 from cpos_servers import adcs_server
+from cpos_servers import power_server
+
 from cpos_types.datagram import Msg, RequestType
 from cpos_servers.fast_socket import FastSocket
 
 
 from cpos_types.datagram import Msg, RequestType
 
-SERVERS = [cdh_server, comms_server, adcs_server]
+SERVERS = [cdh_server, comms_server, adcs_server, power_server]
 
 SOCKET_PATH = '/tmp/watchdog'
 logging.basicConfig(level=logging.INFO)
