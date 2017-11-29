@@ -1,0 +1,62 @@
+import logging
+import socketserver
+import sys
+import threading
+import os
+import pickle
+import logging
+
+from cpos_servers import base_server
+from cpos_types.datagram import Msg, RequestType, LogRequest 
+from cpos_types.cmd_types import LogCmd
+
+SOCKET_PATH = '/tmp/log'
+LOG_DIR = '/tmp/logs'
+LOG_PATH = LOG_DIR + '/log'
+logging.basicConfig(level=logging.INFO)
+
+
+class LogHandler(base_server.CPOSHandler):
+
+    def __init__(self, *args, **kwargs):
+        os.mkdirs(LOG_PATH, exist_ok=True)
+        # Rotate on UTC Sundays
+        logger = logging.getLogger('rotating_log')
+        logger.setLevel(logging.INFO)
+        self.logger = logging.TimedRotatingFileHandler(LOG_PATH, when='W6', utc=True)
+        super()
+
+    def handle(self):
+        # Mebibyte
+        msg = pickle.loads(self.request.recv(2 ** 20))
+        if self.handle_default(msg):
+            return True
+
+        if isinstance(msg.data, list):
+            cmd = msg.data[0]
+            if cmd == LogCmd.ADD_LINES:
+                level = msg.data[1]
+                source 
+                self.logger
+
+    def write(self, lines):
+        print('Wrote to log: {}'.format(lines))
+
+def start_server():
+    logging.info('Initializing Log server...')
+    if os.path.exists(SOCKET_PATH):
+        logging.warn('Detected stale socket, removing to start server...')
+        os.remove(SOCKET_PATH)
+
+    server = base_server.CPOSServer(
+        SOCKET_PATH,
+        LogHandler
+    )
+    try:
+        server.serve_forever()
+    finally:
+        # Make sure to remove socket if handler crashes
+        os.remove(SOCKET_PATH)
+
+if __name__ == '__main__':
+    start_server()

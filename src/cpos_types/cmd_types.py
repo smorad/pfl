@@ -26,11 +26,14 @@ ADCSCmd = Enum('ADCSCmd',
     ])
 )
 
-LoggingCmd = Enum('LoggingCmd',
+LogCmd = Enum('LogCmd',
     ' '.join(
     ['GET_LEVEL',    # Return a formatted packet containing all logs at a level
     'GET_LINES',     # Return a formatted packet with N most recent entries
+    'ADD_LINES',     # Add a list of lines to the log storage
     'GET_TLM'        # Return all unsent logs marked as telemetry
+    'GET_STATE'      # Get the state of all operations, persists after poweroff
+    'SET_STATE'      # Set the state of all operations, persists after poweroff
     ])
 )
 
@@ -45,5 +48,12 @@ PowerCmd = Enum('PowerCmd',
     ' '.join(
     ['GET_STATUS' ,  # Return bus and battery voltage and current
     'LOW_POWER'      # Returns whether or not power is low
+    ])
+)
+
+StorageCmd = Enum('StorageCmd',
+    ' '.join(
+    ['STORE',       # Store object blob
+    'LOAD',         # Load blob as object
     ])
 )
