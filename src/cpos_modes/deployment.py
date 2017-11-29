@@ -62,7 +62,7 @@ class Deployment(CPOSMode):
 
         uptime = Msg(RequestType.COMMAND,
             [StorageCmd.LOAD, 'UPTIME']
-        ).send_and_recv(SOCKET_PATH, STORAGE_SOCKET_PATH)
+        ).send_and_recv(SOCKET_PATH, STORAGE_SOCKET_PATH).data
 
         Msg(RequestType.COMMAND,
             [StorageCmd.STORE, 'UPTIME', 0]
