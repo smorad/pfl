@@ -6,14 +6,14 @@ import os
 import pickle
 import logging
 
-from cpos_servers import base_server
-from cpos_types.datagram import Msg, RequestType 
+from pfl_servers import base_server
+from pfl_types.datagram import Msg, RequestType 
 
 SOCKET_PATH = '/tmp/cdh'
 logging.basicConfig(level=logging.INFO)
 
 
-class CDHHandler(base_server.CPOSHandler):
+class CDHHandler(base_server.PFLHandler):
     def handle(self):
         msg = pickle.loads(self.request.recv(1024))
         if self.handle_default(msg):
@@ -25,7 +25,7 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = base_server.CPOSServer(
+    server = base_server.PFLServer(
         SOCKET_PATH,
         CDHHandler
     )

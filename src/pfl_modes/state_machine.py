@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from cpos_modes.safe_mode import Safe
+from pfl_modes.safe_mode import Safe
 import logging
 
 class StateMachine:

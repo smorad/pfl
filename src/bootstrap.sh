@@ -9,7 +9,7 @@ find /tmp/ -type s | grep -v tmux | xargs rm || true
 echo
 echo 'Watchdog Init:'
 echo '---------------------------------'
-python3 cpos_servers/watchdog.py &
+python3 pfl_servers/watchdog.py &
 # Keep watchdog init logs out of the deployment segment
 sleep 1
 echo '---------------------------------'
@@ -17,19 +17,19 @@ echo
 
 echo 'Deployment Phase:'
 echo '---------------------------------'
-python3 cpos_modes/deployment.py
+python3 pfl_modes/deployment.py
 echo '---------------------------------'
 echo
 
 echo 'Detumble Phase:'
 echo '---------------------------------'
-python3 cpos_modes/detumble.py
+python3 pfl_modes/detumble.py
 echo '---------------------------------'
 echo
 
 echo 'SafeMode Phase:'
 echo '---------------------------------'
-python3 cpos_modes/safe_mode.py
+python3 pfl_modes/safe_mode.py
 echo '---------------------------------'
 
 # Reap children

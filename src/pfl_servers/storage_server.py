@@ -7,9 +7,9 @@ import pickle
 import logging
 import shelve
 
-from cpos_servers import base_server
-from cpos_types.datagram import Msg, RequestType 
-from cpos_types.cmd_types import StorageCmd
+from pfl_servers import base_server
+from pfl_types.datagram import Msg, RequestType 
+from pfl_types.cmd_types import StorageCmd
 
 SOCKET_PATH = '/tmp/storage'
 DB_PATH = '/tmp/persist-storage'
@@ -18,7 +18,7 @@ MAX_FILE_SIZE = 2 ** 27     # 128 Mebibytes
 logging.basicConfig(level=logging.INFO)
 
 #TODO: Add some robustness on server reload in case db file gets corrupted
-class StorageHandler(base_server.CPOSHandler):
+class StorageHandler(base_server.PFLHandler):
     def handle(self):
         msg = pickle.loads(self.request.recv(MAX_FILE_SIZE))
         if self.handle_default(msg):
@@ -49,7 +49,7 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = base_server.CPOSServer(
+    server = base_server.PFLServer(
         SOCKET_PATH,
         StorageHandler
     )

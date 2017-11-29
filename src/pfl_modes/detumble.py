@@ -2,10 +2,10 @@
 
 import logging
 
-from cpos_types.datagram import Msg, RequestType
-from cpos_types.cmd_types import ADCSCmd, PowerCmd
-from cpos_servers.fast_socket import FastSocket
-from cpos_modes.base_mode import CPOSMode
+from pfl_types.datagram import Msg, RequestType
+from pfl_types.cmd_types import ADCSCmd, PowerCmd
+from pfl_servers.fast_socket import FastSocket
+from pfl_modes.base_mode import PFLMode
 
 SOCKET_PATH = '/tmp/mode/detumble'
 COMMS_SOCKET_PATH = '/tmp/comms'
@@ -13,7 +13,7 @@ ADCS_SOCKET_PATH = '/tmp/adcs'
 POWER_SOCKET_PATH = '/tmp/power'
 
 logging.basicConfig(level=logging.INFO)
-class Detumble(CPOSMode):
+class Detumble(PFLMode):
     def start(self):
         # Check IMU rates
         # if low IMU

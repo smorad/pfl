@@ -6,9 +6,9 @@ import os
 import pickle
 import logging
 
-from cpos_servers import base_server
-from cpos_types.datagram import Msg, RequestType, LogRequest 
-from cpos_types.cmd_types import LogCmd
+from pfl_servers import base_server
+from pfl_types.datagram import Msg, RequestType, LogRequest 
+from pfl_types.cmd_types import LogCmd
 
 SOCKET_PATH = '/tmp/log'
 LOG_DIR = '/tmp/logs'
@@ -16,7 +16,7 @@ LOG_PATH = LOG_DIR + '/log'
 logging.basicConfig(level=logging.INFO)
 
 
-class LogHandler(base_server.CPOSHandler):
+class LogHandler(base_server.PFLHandler):
 
     def __init__(self, *args, **kwargs):
         os.mkdirs(LOG_PATH, exist_ok=True)
@@ -48,7 +48,7 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = base_server.CPOSServer(
+    server = base_server.PFLServer(
         SOCKET_PATH,
         LogHandler
     )

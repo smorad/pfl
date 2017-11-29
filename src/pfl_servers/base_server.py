@@ -6,12 +6,12 @@ import os
 import pickle
 import logging
 
-from cpos_types.datagram import Msg, RequestType
+from pfl_types.datagram import Msg, RequestType
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-class CPOSHandler(socketserver.BaseRequestHandler):
+class PFLHandler(socketserver.BaseRequestHandler):
 
     def handle_default(self, msg):
         '''
@@ -35,7 +35,7 @@ class CPOSHandler(socketserver.BaseRequestHandler):
             return False
 
 
-class CPOSServer(socketserver.UnixStreamServer):
+class PFLServer(socketserver.UnixStreamServer):
     def handle_error(self, request, client_address):
         super(request, client_address)
         logging.error('Request {}\n could not be handled,'

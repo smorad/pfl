@@ -3,7 +3,7 @@ import collections
 from typing import Any
 import pickle
 
-from cpos_servers.fast_socket import FastSocket
+from pfl_servers.fast_socket import FastSocket
 
 
 RequestType = enum.Enum('RequestType', 

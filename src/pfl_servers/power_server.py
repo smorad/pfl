@@ -6,8 +6,8 @@ import os
 import pickle
 import logging
 
-from cpos_types.datagram import Msg, RequestType 
-from cpos_types.cmd_types import PowerCmd
+from pfl_types.datagram import Msg, RequestType 
+from pfl_types.cmd_types import PowerCmd
 
 SOCKET_PATH = '/tmp/power'
 logging.basicConfig(level=logging.INFO)

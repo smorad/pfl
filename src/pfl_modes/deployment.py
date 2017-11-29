@@ -6,18 +6,18 @@ import pickle
 import logging
 import datetime
 
-from cpos_types.datagram import Msg, RequestType
-from cpos_servers.fast_socket import FastSocket
-from cpos_modes.base_mode import CPOSMode
+from pfl_types.datagram import Msg, RequestType
+from pfl_servers.fast_socket import FastSocket
+from pfl_modes.base_mode import PFLMode
 
-from cpos_types.cmd_types import CommsCmd, StorageCmd
+from pfl_types.cmd_types import CommsCmd, StorageCmd
 
 SOCKET_PATH = '/tmp/mode/deployment'
 COMMS_SOCKET_PATH = '/tmp/comms'
 STORAGE_SOCKET_PATH = '/tmp/storage'
 logging.basicConfig(level=logging.INFO)
 
-class Deployment(CPOSMode):
+class Deployment(PFLMode):
     def start(self):
         # wait 15 mins
         DEPLOY_WAIT = 1 # will actually be 15 mins

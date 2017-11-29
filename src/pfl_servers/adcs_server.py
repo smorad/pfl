@@ -6,16 +6,16 @@ import os
 import pickle
 import logging
 
-from cpos_types.datagram import Msg, RequestType
-from cpos_types.cmd_types import ADCSCmd
-from cpos_servers.fast_socket import FastSocket
-from cpos_servers import base_server
+from pfl_types.datagram import Msg, RequestType
+from pfl_types.cmd_types import ADCSCmd
+from pfl_servers.fast_socket import FastSocket
+from pfl_servers import base_server
 
 SOCKET_PATH = '/tmp/adcs'
 logging.basicConfig(level=logging.INFO)
 
 
-class ADCSHandler(base_server.CPOSHandler):
+class ADCSHandler(base_server.PFLHandler):
     def handle(self):
         try:
             msg = pickle.loads(self.request.recv(1024))
@@ -52,7 +52,7 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = base_server.CPOSServer(
+    server = base_server.PFLServer(
         SOCKET_PATH,
         ADCSHandler
     )

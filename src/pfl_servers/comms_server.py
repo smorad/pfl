@@ -9,14 +9,14 @@ import pickle
 import time
 import logging
 
-from cpos_servers import base_server
-from cpos_types.datagram import Msg, RequestType 
-from cpos_types.cmd_types import CommsCmd
+from pfl_servers import base_server
+from pfl_types.datagram import Msg, RequestType 
+from pfl_types.cmd_types import CommsCmd
 
 SOCKET_PATH = '/tmp/comms'
 logging.basicConfig(level=logging.INFO)
 
-class CommsHandler(base_server.CPOSHandler):
+class CommsHandler(base_server.PFLHandler):
     def deploy_antenna(self) -> bool:
         time.sleep(1)
         return True
@@ -50,7 +50,7 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
-    server = base_server.CPOSServer(
+    server = base_server.PFLServer(
         SOCKET_PATH,
         CommsHandler
     )

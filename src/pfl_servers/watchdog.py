@@ -10,18 +10,18 @@ import os
 import logging
 import hashlib
 
-from cpos_servers import cdh_server
-from cpos_servers import comms_server
-from cpos_servers import adcs_server
-from cpos_servers import power_server
-from cpos_servers import log_server
-from cpos_servers import storage_server
+from pfl_servers import cdh_server
+from pfl_servers import comms_server
+from pfl_servers import adcs_server
+from pfl_servers import power_server
+from pfl_servers import log_server
+from pfl_servers import storage_server
 
-from cpos_types.datagram import Msg, RequestType
-from cpos_servers.fast_socket import FastSocket
+from pfl_types.datagram import Msg, RequestType
+from pfl_servers.fast_socket import FastSocket
 
 
-from cpos_types.datagram import Msg, RequestType
+from pfl_types.datagram import Msg, RequestType
 
 SERVERS = [cdh_server, comms_server, adcs_server, power_server, storage_server]
 
