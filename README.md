@@ -1,6 +1,6 @@
 # PFL - Python Flight Layer
 ### A modular python flight layer for cubesats and smallsats
-PFL to enable satellite engineers who don't have the money to hire software engineers, or the time to learn flight software. This project relies heavily on BSD Stream Sockets, so a base OS of either Linux or BSD is required.
+The purpose of PFL is to enable time and money constrained researchers to write flight software very quickly. This project relies heavily on BSD Stream Sockets, so a flight computer running either Linux or BSD is required.
 
 ### Architecture
 
@@ -19,3 +19,13 @@ Servers communicate with the rest of `PFL` via BSD Stream Sockets. This means th
 
 #### Types
 Types exist to make everything a little bit safer. Command types ensure that we don't ask servers to do something that they are
+
+### Getting Started
+You will need to set your python path to the `src` directory. Do this by exporting the path of this repo: 
+```
+$ cd pfl/src
+$ export PYTHONPATH="$(pwd)"
+```
+Once you've done that, you should be able to test everything by running
+`$ ./bootstrap.sh` from the `src` directory. This will spawn the watchdog, the servers, and run through a few phases.
+
