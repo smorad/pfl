@@ -1,6 +1,6 @@
 # PFL - Python Flight Layer
 ### A modular python flight layer for cubesats and smallsats
-PFL to enable satellite engineers who don't have the money to hire software engineers, or the time to learn flight software. This project relies heavily on BSD Stream Sockets, so a base OS of either Linux or BSD is required.
+The purpose of PFL is to enable time and money constrained researchers to write flight software very quickly. This project relies heavily on BSD Stream Sockets, so a flight computer running either Linux or BSD is required.
 
 ### Architecture
 
