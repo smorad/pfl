@@ -13,7 +13,7 @@ class StateMachine:
     def __init__(self):
         while(True):
             logging.info('Transition to state: {}'.format(self.state))
-            state = self.state().start()
+            self.state = self.state().start()
 
 
 

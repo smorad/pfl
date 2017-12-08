@@ -39,6 +39,12 @@ class Deployment(PFLMode):
 
         # wait for ground signal
 
+        # Write status successful deployment
+
+
+        Msg(RequestType.COMMAND,
+            [StorageCmd.STORE, 'DEPLOYED', 1]
+        ).send(SOCKET_PATH, STORAGE_SOCKET_PATH)
 
     def update_boot_status(self) -> (float, int):
         '''
