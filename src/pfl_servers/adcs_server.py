@@ -5,6 +5,7 @@ import threading
 import os
 import pickle
 import logging
+from typing import List
 
 from pfl_types.datagram import Msg, RequestType
 from pfl_types.cmd_types import ADCSCmd
@@ -21,13 +22,18 @@ class ADCSHandler(base_server.PFLHandler):
             msg = pickle.loads(self.request.recv(1024))
             if self.handle_default(msg):
                 return
-            if msg.data == ADCSCmd.IS_TUMBLING:
+            if msg.data[0] == ADCSCmd.IS_TUMBLING:
                 result = self.is_tumbling()
                 self.request.sendall(
                     pickle.dumps(Msg(RequestType.DATA, result))
                 )
-            elif msg.data == ADCSCmd.DETUMBLE:
+            elif msg.data[0] == ADCSCmd.DETUMBLE:
                 result = self.detumble()
+                self.request.sendall(
+                    pickle.dumps(Msg(RequestType.DATA, result))
+                )
+            elif msg.data[0] == ADCSCmd.POINT:
+                result = self.point(msg.data[1])
                 self.request.sendall(
                     pickle.dumps(Msg(RequestType.DATA, result))
                 )
@@ -45,6 +51,9 @@ class ADCSHandler(base_server.PFLHandler):
         # power off coils, return
         time.sleep(2)
         return True
+
+    def point(self, xyz: List[int]) -> List[int]:
+        return [0, 0, 0]
 
 def start_server():
     logging.info('Initializing ADCS server...')

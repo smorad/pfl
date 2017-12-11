@@ -31,7 +31,7 @@ class Detumble(PFLMode):
 
         is_tumbling = Msg(
             RequestType.COMMAND, 
-            ADCSCmd.IS_TUMBLING
+            [ADCSCmd.IS_TUMBLING]
         ).send_and_recv(SOCKET_PATH, ADCS_SOCKET_PATH)
 
         if not is_tumbling:
@@ -45,12 +45,12 @@ class Detumble(PFLMode):
         if not low_power:
             detumble = Msg(
                 RequestType.COMMAND,
-                ADCSCmd.COILS_ON
+                [ADCSCmd.COILS_ON]
             ).send_and_recv(SOCKET_PATH, ADCS_SOCKET_PATH)
 
             send_beacon = Msg(
                 RequestType.COMMAND,
-                CommsCmd.SEND_TLM_PKT
+                [CommsCmd.SEND_TLM_PKT]
             ).send_and_recv(SOCKET_PATH, ADCS_SOCKET_PATH)
 
 
