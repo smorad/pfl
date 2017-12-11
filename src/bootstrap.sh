@@ -6,6 +6,9 @@ find $ROOT_DIR -name *.checksum -delete
 # Get rid of sockets left open from pkill
 # so our debug messages aren't polluted
 find /tmp/ -type s | grep -v tmux | xargs rm || true
+
+# Create our /mode socket subdir
+mkdir -p /tmp/mode
 echo
 echo 'Watchdog Init:'
 echo '---------------------------------'
