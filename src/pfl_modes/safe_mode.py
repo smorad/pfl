@@ -41,12 +41,13 @@ class Safe(PFLMode):
 
             # We only want to deploy once
             did_deploy = Msg(
-                RequestType.COMMAND,
+                RequestType.COMMAND_LIST,
                 [StorageCmd.LOAD, 'DEPLOYED']
             ).send_and_recv(SOCKET_PATH, STORAGE_SOCKET_PATH).data
 
 
             if not did_deploy:
+                from pfl_modes.deployment import Deployment
                 return Deployment
 
         return Safe
@@ -56,4 +57,3 @@ if __name__ == '__main__':
     Safe().start()
 
 
-from pfl_modes.deployment import Deployment

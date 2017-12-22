@@ -6,7 +6,6 @@ from pfl_types.datagram import Msg, RequestType
 from pfl_types.cmd_types import ADCSCmd, PowerCmd
 from pfl_servers.fast_socket import FastSocket
 from pfl_modes.base_mode import PFLMode
-from pfl_modes.safe_mode import Safe
 
 SOCKET_PATH = '/tmp/mode/detumble'
 COMMS_SOCKET_PATH = '/tmp/comms'
@@ -54,6 +53,7 @@ class Detumble(PFLMode):
                 [CommsCmd.SEND_TLM_PKT]
             ).send_and_recv(SOCKET_PATH, ADCS_SOCKET_PATH)
 
+        from pfl_modes.safe_mode import Safe
         return Safe
 
 
@@ -69,5 +69,3 @@ class Detumble(PFLMode):
 
 if __name__ == '__main__':
     Detumble().start()
-
-

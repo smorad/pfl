@@ -33,6 +33,9 @@ class PFLHandler(socketserver.BaseRequestHandler):
         elif msg.req_type == RequestType.COMMAND:
             print('Executing command: {}'.format(msg.data))
             return False
+        elif msg.req_type == RequestType.COMMAND_LIST:
+            print('Executing command: {} with args {}'.format(msg.data[0], msg.data[1:]))
+            return False
 
 
 class PFLServer(socketserver.UnixStreamServer):

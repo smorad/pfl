@@ -9,7 +9,6 @@ import datetime
 from pfl_types.datagram import Msg, RequestType
 from pfl_servers.fast_socket import FastSocket
 from pfl_modes.base_mode import PFLMode
-from pfl_modes.detumble import Detumble
 
 from pfl_types.cmd_types import CommsCmd, StorageCmd
 
@@ -43,10 +42,11 @@ class Deployment(PFLMode):
         # Write status successful deployment
 
 
-        Msg(RequestType.COMMAND,
+        Msg(RequestType.COMMAND_LIST,
             [StorageCmd.STORE, 'DEPLOYED', 1]
         ).send(SOCKET_PATH, STORAGE_SOCKET_PATH)
 
+        from pfl_modes.detumble import Detumble
         return Detumble
 
     def update_boot_status(self) -> (float, int):
@@ -54,26 +54,26 @@ class Deployment(PFLMode):
         Run on boot. Updates boot count and uptime, and returns
         the current boot count and previous uptime.
         '''
-        Msg(RequestType.COMMAND,
+        Msg(RequestType.COMMAND_LIST,
             [StorageCmd.STORE, 'LAUNCH', True]
         ).send(SOCKET_PATH, STORAGE_SOCKET_PATH)
 
         # update boot count
-        boot_count = Msg(RequestType.COMMAND,
+        boot_count = Msg(RequestType.COMMAND_LIST,
             [StorageCmd.LOAD, 'BOOT_COUNT']
         ).send_and_recv(SOCKET_PATH, STORAGE_SOCKET_PATH).data
         # The first time this won't be in the DB
         boot_count = boot_count or 0
         boot_count += 1
-        Msg(RequestType.COMMAND,
+        Msg(RequestType.COMMAND_LIST,
             [StorageCmd.STORE, 'BOOT_COUNT', boot_count]
         ).send(SOCKET_PATH, STORAGE_SOCKET_PATH)
 
-        uptime = Msg(RequestType.COMMAND,
+        uptime = Msg(RequestType.COMMAND_LIST,
             [StorageCmd.LOAD, 'UPTIME']
         ).send_and_recv(SOCKET_PATH, STORAGE_SOCKET_PATH).data
 
-        Msg(RequestType.COMMAND,
+        Msg(RequestType.COMMAND_LIST,
             [StorageCmd.STORE, 'UPTIME', 0]
         ).send(SOCKET_PATH, STORAGE_SOCKET_PATH)
 
@@ -102,3 +102,4 @@ class Deployment(PFLMode):
 
 if __name__ == '__main__':
     Deployment().start()
+

@@ -7,7 +7,8 @@ from pfl_servers.fast_socket import FastSocket
 
 
 RequestType = enum.Enum('RequestType', 
-    'POWER_ON POWER_OFF RESTART COMMAND DATA PING PING_RESP LOG')
+    'POWER_ON POWER_OFF RESTART COMMAND COMMAND_LIST '
+    'COMMAND_DICT DATA PING PING_RESP LOG')
 
 class LogRequest:
     def __init__(self, source, level, time, message):
