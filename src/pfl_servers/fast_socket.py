@@ -21,7 +21,8 @@ class FastSocket:
             self.sock.settimeout(self.timeout)
             self.sock.connect(self.dest)
         except Exception as e:
-            logging.error(f'Could not bind or connect {self.src}->{self.dest}')
+            logging.error(
+                'Could not bind or connect {}->{}'.format(self.src, self.dest))
         return self.sock
 
     def __exit__(self, *args):
