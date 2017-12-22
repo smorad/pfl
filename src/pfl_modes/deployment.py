@@ -9,6 +9,7 @@ import datetime
 from pfl_types.datagram import Msg, RequestType
 from pfl_servers.fast_socket import FastSocket
 from pfl_modes.base_mode import PFLMode
+from pfl_modes.detumble import Detumble
 
 from pfl_types.cmd_types import CommsCmd, StorageCmd
 
@@ -45,6 +46,8 @@ class Deployment(PFLMode):
         Msg(RequestType.COMMAND,
             [StorageCmd.STORE, 'DEPLOYED', 1]
         ).send(SOCKET_PATH, STORAGE_SOCKET_PATH)
+
+        return Detumble
 
     def update_boot_status(self) -> (float, int):
         '''

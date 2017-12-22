@@ -1,7 +1,6 @@
 export PYTHONPATH=$(pwd)
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Clear old checksums 
-# TODO: remove before launch
 find $ROOT_DIR -name *.checksum -delete
 # Get rid of sockets left open from pkill
 # so our debug messages aren't polluted

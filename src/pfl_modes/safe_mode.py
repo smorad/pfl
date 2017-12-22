@@ -7,7 +7,6 @@ from pfl_types.datagram import Msg, RequestType
 from pfl_types.cmd_types import ADCSCmd, PowerCmd, CommsCmd, StorageCmd
 from pfl_servers.fast_socket import FastSocket
 from pfl_modes.base_mode import PFLMode
-from pfl_modes.deployment import Deployment
 
 SOCKET_PATH = '/tmp/mode/detumble'
 COMMS_SOCKET_PATH = '/tmp/comms'
@@ -50,10 +49,11 @@ class Safe(PFLMode):
             if not did_deploy:
                 return Deployment
 
-        return self
+        return Safe
 
 
 if __name__ == '__main__':
     Safe().start()
 
 
+from pfl_modes.deployment import Deployment
