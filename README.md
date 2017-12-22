@@ -1,3 +1,4 @@
+
 # PFL - Python Flight Layer
 ### A modular python flight layer for cubesats and smallsats
 The purpose of PFL is to enable time and money constrained researchers to write flight software very quickly. This project relies heavily on BSD Stream Sockets, so a flight computer running either Linux or BSD is required.
@@ -32,5 +33,6 @@ Once you've done that, you should be able to test everything by running
 # Spawn subsystem servers for the state machine to talk to
 $ src/pfl_servers/watchdog.py
 # Spawn the state machine and run through the states
-$ src/pfl_modes/state_machine.py```
+$ src/pfl_modes/state_machine.py
+```
 
