@@ -17,13 +17,17 @@ from pfl_servers import power_server
 from pfl_servers import log_server
 from pfl_servers import storage_server
 
+from pfl_modes import state_machine
+
 from pfl_types.datagram import Msg, RequestType
 from pfl_servers.fast_socket import FastSocket
 
 
 from pfl_types.datagram import Msg, RequestType
 
-SERVERS = [cdh_server, comms_server, adcs_server, power_server, storage_server]
+# Boot order
+# Generally, state machine should be last
+SERVERS = [cdh_server, comms_server, adcs_server, power_server, storage_server, state_machine]
 
 SOCKET_PATH = '/tmp/watchdog'
 logging.basicConfig(level=logging.INFO)

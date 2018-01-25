@@ -1,25 +1,39 @@
 #!/usr/bin/env python3
 
+import os
+import pickle
+
 from pfl_modes.safe_mode import Safe
-from pfl_servers import storage_server
+from pfl_servers import storage_server, base_server
+from pfl_types.datagram import Msg, RequestType 
 import logging
 
 TESTING = True
 
-class StateMachine:
-    # Start in safe mode
-    # After timer switch to deployment mode
-    # After deployment switch to comms if successful, retry mode if failed
+SOCKET_PATH = '/tmp/state_machine'
+logging.basicConfig(level=logging.INFO)
+
+
+class StateMachineHandler(base_server.PFLHandler):
+    '''
+    Different than the other servers. The state machine is 
+    the "driver" that drives the other servers. The state machine
+    will only switch phases upong receiving a PING request from the
+    watchdog. This ensures the state machine doesn't keep running
+    if we end up in a bad state.
+
+    This also means that we can only move one phase every ping delay.
+    '''
     
     state = Safe
 
-    def __init__(self):
-        if TESTING:
-            clean_db()
-        while(True):
-            logging.info('Transition to state: {}'.format(self.state))
-            self.state = self.state().start()
 
+    def handle(self):
+        msg = pickle.loads(self.request.recv(1024))
+        self.handle_default(msg)
+        if msg.req_type == RequestType.PING:
+            # Wait for ping from watchdog to execute phases
+            self.state = self.state().start()
 
 def clean_db():
     '''
@@ -36,5 +50,23 @@ def clean_db():
         pass
 
 
+def start_server():
+    logging.info('Initializing State Machine server...')
+    if os.path.exists(SOCKET_PATH):
+        logging.warn('Detected stale socket, removing to start server...')
+        os.remove(SOCKET_PATH)
+
+    server = base_server.PFLServer(
+        SOCKET_PATH,
+        StateMachineHandler    
+    )
+    try:
+        server.serve_forever()
+    finally:
+        # Make sure to remove socket if handler crashes
+        os.remove(SOCKET_PATH)
+
 if __name__ == '__main__':
-    StateMachine()
+    if TESTING:
+        clean_db()
+    start_server()
