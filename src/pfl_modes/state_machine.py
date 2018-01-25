@@ -34,6 +34,7 @@ class StateMachineHandler(base_server.PFLHandler):
         if msg.req_type == RequestType.PING:
             # Wait for ping from watchdog to execute phases
             self.state = self.state().start()
+            logging.info('Transitioning to state {}'.format(self.state))
 
 def clean_db():
     '''
@@ -56,6 +57,9 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
+    if TESTING:
+        clean_db()
+
     server = base_server.PFLServer(
         SOCKET_PATH,
         StateMachineHandler    
@@ -67,6 +71,4 @@ def start_server():
         os.remove(SOCKET_PATH)
 
 if __name__ == '__main__':
-    if TESTING:
-        clean_db()
     start_server()
