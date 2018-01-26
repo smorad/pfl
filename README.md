@@ -27,12 +27,6 @@ You will need to set your python path to the `src` directory. Do this by exporti
 $ cd pfl/src
 $ export PYTHONPATH="$(pwd)"
 ```
-Once you've done that, you should be able to test everything by running
-`$ src/bootstrap.sh` from the `src` directory. This will spawn the watchdog, the servers, and run through a few phases. This is used to test each phase you've written individually. If you'd like to test the full flow using the state machine, go ahead and run 
-```
-# Spawn subsystem servers in the backgroud for the state machine to talk to
-$ src/pfl_servers/watchdog.py &
-# Spawn the state machine and run through the states
-$ src/pfl_modes/state_machine.py
-```
+Once you've done that, you should be able to run `pfl` by typing:
+`$ src/pfl_modes/watchdog.py`
 
