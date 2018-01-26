@@ -18,29 +18,24 @@ logging.basicConfig(level=logging.INFO)
 
 class ADCSHandler(base_server.PFLHandler):
     def handle(self):
-        try:
-            msg = pickle.loads(self.request.recv(1024))
-            if self.handle_default(msg):
-                return
-            if msg.data[0] == ADCSCmd.IS_TUMBLING:
-                result = self.is_tumbling()
-                self.request.sendall(
-                    pickle.dumps(Msg(RequestType.DATA, result))
-                )
-            elif msg.data[0] == ADCSCmd.DETUMBLE:
-                result = self.detumble()
-                self.request.sendall(
-                    pickle.dumps(Msg(RequestType.DATA, result))
-                )
-            elif msg.data[0] == ADCSCmd.POINT:
-                result = self.point(msg.data[1])
-                self.request.sendall(
-                    pickle.dumps(Msg(RequestType.DATA, result))
-                )
-            else:
-                logging.error('Msg {} could not be executed'.format(self.msg))
-        except Exception as e:
-            print(e)
+        msg = pickle.loads(self.request.recv(1024))
+        if self.handle_default(msg):
+            return
+        if msg.data[0] == ADCSCmd.IS_TUMBLING:
+            result = self.is_tumbling()
+            self.request.sendall(
+                pickle.dumps(Msg(RequestType.DATA, result))
+            )
+        elif msg.data[0] == ADCSCmd.DETUMBLE:
+            result = self.detumble()
+            self.request.sendall(
+                pickle.dumps(Msg(RequestType.DATA, result))
+            )
+        elif msg.data[0] == ADCSCmd.POINT:
+            result = self.point(msg.data[1])
+            self.request.sendall(
+                pickle.dumps(Msg(RequestType.DATA, result))
+            )
 
 
     def is_tumbling(self):
