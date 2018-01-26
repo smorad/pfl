@@ -10,6 +10,7 @@ import os
 import logging
 import hashlib
 
+from pfl_servers import hw_watchdog_server
 from pfl_servers import cdh_server
 from pfl_servers import comms_server
 from pfl_servers import adcs_server
@@ -27,7 +28,7 @@ from pfl_types.datagram import Msg, RequestType
 
 # Boot order
 # Generally, state machine should be last
-SERVERS = [cdh_server, comms_server, adcs_server, power_server, storage_server, state_machine]
+SERVERS = [hw_watchdog_server, cdh_server, comms_server, adcs_server, power_server, storage_server, state_machine]
 
 SOCKET_PATH = '/tmp/watchdog'
 logging.basicConfig(level=logging.INFO)
