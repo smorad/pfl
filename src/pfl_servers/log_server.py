@@ -7,7 +7,7 @@ import pickle
 import logging
 
 from pfl_servers import base_server
-from pfl_types.datagram import Msg, RequestType, LogRequest 
+from pfl_types.datagram import Msg, RequestType, LogRequest
 from pfl_types.cmd_types import LogCmd
 
 SOCKET_PATH = '/tmp/log'
@@ -32,12 +32,13 @@ class LogHandler(base_server.PFLHandler):
         if self.handle_default(msg):
             return True
 
-        if isinstance(msg.data, list):
-            cmd = msg.data[0]
-            if cmd == LogCmd.ADD_LINES:
-                level = msg.data[1]
-                source 
-                self.logger
+        assert(msg.req_type == RequestType.COMMAND_DICT)
+        cmd = msg.data['cmd']
+        if cmd == LogCmd.ADD_LINES:
+            level = msg.data['level']
+            source = msg.data[2]
+            time = msg.data[3]
+            self.logger
 
     def write(self, lines):
         print('Wrote to log: {}'.format(lines))

@@ -8,6 +8,7 @@ import logging
 
 from pfl_types.datagram import Msg, RequestType
 
+LOG_SOCKET_PATH = '/tmp/log'
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -53,7 +54,10 @@ def start_server():
         logging.warn('Detected stale socket, removing to start server...')
         os.remove(SOCKET_PATH)
 
+    logger = get_network_logger()
     server = socketserver.UnixStreamServer(SOCKET_PATH, CDHHandler)
+    # Get a network logger
+    server.logger = logging.handlers.SocketHandler(LOG_SOCKET_PATH)
     try:
         server.serve_forever()
     finally:

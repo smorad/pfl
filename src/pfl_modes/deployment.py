@@ -79,15 +79,6 @@ class Deployment(PFLMode):
 
         return uptime, boot_count
 
-
-
-    def fail(self):
-        '''
-        Cleanup in case of failure
-        '''
-        # retract antenna
-        pass
-
     def deploy_antenna(self) -> bool:
         return Msg(
             RequestType.COMMAND,
